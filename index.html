@@ -370,11 +370,6 @@
                 font-size: 18px;
             }
             
-            #game-canvas {
-                width: 300px;
-                height: 300px;
-            }
-            
             .mobile-controls {
                 display: grid;
             }
@@ -383,11 +378,6 @@
         @media (max-width: 480px) {
             .game-title {
                 font-size: 36px;
-            }
-            
-            #game-canvas {
-                width: 280px;
-                height: 280px;
             }
             
             .mobile-controls {
@@ -445,7 +435,7 @@
     <!-- Игровой экран -->
     <div id="game-container">
         <div id="score-display">Очки: 0</div>
-        <canvas id="game-canvas" width="400" height="400"></canvas>
+        <canvas id="game-canvas"></canvas>
         <div class="mobile-controls">
             <button class="up-btn" id="up-btn">↑</button>
             <button class="left-btn" id="left-btn">←</button>
@@ -520,18 +510,25 @@
         let score = 0;
         let scoreInterval;
         let gameStarted = false;
-        let gridSize = 10;
+        let gridSize = 20; // Увеличиваем размер сетки для лучшего отображения на мобильных
         let gameSpeed = 100;
+        let canvasSize = 400; // Базовый размер canvas
 
         // Инициализация игры
         function initGame() {
+            // Установка размера canvas с учетом устройства
+            setupCanvasSize();
+            
             // Сброс змейки
+            const startX = Math.floor(canvasSize / 2 / gridSize) * gridSize;
+            const startY = Math.floor(canvasSize / 2 / gridSize) * gridSize;
+            
             snake = [
-                {x: 200, y: 200},
-                {x: 190, y: 200},
-                {x: 180, y: 200},
-                {x: 170, y: 200},
-                {x: 160, y: 200}
+                {x: startX, y: startY},
+                {x: startX - gridSize, y: startY},
+                {x: startX - gridSize * 2, y: startY},
+                {x: startX - gridSize * 3, y: startY},
+                {x: startX - gridSize * 4, y: startY}
             ];
             
             direction = 'right';
@@ -556,6 +553,22 @@
             gameInterval = setInterval(gameLoop, gameSpeed);
             scoreInterval = setInterval(incrementScore, 1000);
             gameStarted = false;
+        }
+
+        // Установка размера canvas
+        function setupCanvasSize() {
+            if (window.innerWidth <= 768) {
+                // Для мобильных устройств делаем canvas квадратным и адаптивным
+                const maxSize = Math.min(window.innerWidth - 40, window.innerHeight - 200, 400);
+                canvasSize = maxSize - (maxSize % gridSize); // Обеспечиваем кратность gridSize
+                gameCanvas.width = canvasSize;
+                gameCanvas.height = canvasSize;
+            } else {
+                // Для десктопов фиксированный размер
+                canvasSize = 400;
+                gameCanvas.width = canvasSize;
+                gameCanvas.height = canvasSize;
+            }
         }
 
         // Игровой цикл
@@ -923,26 +936,15 @@
             // Скрытие игрового контейнера
             gameContainer.style.display = 'none';
             
-            // Адаптация размера canvas для мобильных устройств
-            if (window.innerWidth <= 768) {
-                const size = Math.min(window.innerWidth - 40, 400);
-                gameCanvas.width = size;
-                gameCanvas.height = size;
-                gridSize = Math.floor(size / 40) * 2;
-            }
+            // Настройка canvas при загрузке
+            setupCanvasSize();
         });
 
         // Обработка изменения размера окна
         window.addEventListener('resize', () => {
-            if (window.innerWidth <= 768) {
-                const size = Math.min(window.innerWidth - 40, 400);
-                gameCanvas.width = size;
-                gameCanvas.height = size;
-                gridSize = Math.floor(size / 40) * 2;
-            } else {
-                gameCanvas.width = 400;
-                gameCanvas.height = 400;
-                gridSize = 10;
+            if (gameContainer.style.display === 'flex') {
+                setupCanvasSize();
+                initGame();
             }
         });
     </script>
