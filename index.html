@@ -1,164 +1,137 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <meta name="google-site-verification" content="rd3e2zvgvc_FYIuSOG01MEmWKf7cFx-92v6ptVrp_tM" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake</title>
+    <title>Змейка</title>
     <style>
-        * {
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-
-        body {
+            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             background-color: #f0f0f0;
             transition: background-color 0.3s;
-            overflow: hidden;
         }
-
+        
         body.dark-theme {
             background-color: #121212;
             color: white;
         }
-
-        #main-menu {
+        
+        #main-menu, #settings-menu, #game-over-menu {
             text-align: center;
-            position: relative;
-            width: 100%;
-            max-width: 500px;
             padding: 20px;
-        }
-
-        .game-title {
-            font-size: 72px;
-            font-weight: bold;
-            font-style: italic;
-            color: #4CAF50;
-            margin-bottom: 40px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .dark-theme .game-title {
-            color: #45a049;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .menu-button {
-            display: block;
-            width: 80%;
-            margin: 15px auto;
-            padding: 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 20px;
-            cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .menu-button:hover {
-            transform: translateY(-3px);
-            background-color: #45a049;
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .menu-button:active {
-            transform: translateY(1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .menu-button i {
-            margin-right: 10px;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .modal-content {
             background-color: white;
-            padding: 25px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             position: relative;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
-
-        .dark-theme .modal-content {
+        
+        .dark-theme #main-menu, 
+        .dark-theme #settings-menu,
+        .dark-theme #game-over-menu {
             background-color: #333;
             color: white;
         }
-
-        .close-button {
-            position: absolute;
-            top: 15px;
-            right: 15px;
+        
+        #game-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        
+        .menu-button {
+            display: block;
+            width: 200px;
+            padding: 15px;
+            margin: 10px auto;
             background-color: #4CAF50;
             color: white;
             border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            font-size: 16px;
+            border-radius: 5px;
+            font-size: 18px;
             cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: background-color 0.2s;
+            transition: background-color 0.3s;
         }
-
-        .close-button:hover {
+        
+        .menu-button:hover {
             background-color: #45a049;
         }
-
+        
+        #game-canvas {
+            border: 2px solid #4CAF50;
+            background-color: #f9f9f9;
+        }
+        
+        .dark-theme #game-canvas {
+            background-color: #222;
+            border-color: #45a049;
+        }
+        
+        #score-display {
+            font-size: 24px;
+            margin: 15px 0;
+            color: #4CAF50;
+        }
+        
+        .dark-theme #score-display {
+            color: #45a049;
+        }
+        
+        .mobile-controls {
+            display: none;
+            margin-top: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .mobile-controls button {
+            padding: 15px;
+            font-size: 20px;
+            background-color: rgba(76, 175, 80, 0.7);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+        
         .switch-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 20px 0;
+            margin: 15px 0;
             padding: 10px;
             background-color: #f5f5f5;
-            border-radius: 8px;
+            border-radius: 5px;
         }
-
+        
         .dark-theme .switch-container {
             background-color: #444;
         }
-
+        
         .switch {
             position: relative;
             display: inline-block;
             width: 60px;
             height: 34px;
         }
-
+        
         .switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
-
+        
         .slider {
             position: absolute;
             cursor: pointer;
@@ -170,7 +143,7 @@
             transition: .4s;
             border-radius: 34px;
         }
-
+        
         .slider:before {
             position: absolute;
             content: "";
@@ -182,533 +155,328 @@
             transition: .4s;
             border-radius: 50%;
         }
-
+        
         input:checked + .slider {
             background-color: #4CAF50;
         }
-
+        
         input:checked + .slider:before {
             transform: translateX(26px);
         }
-
+        
+        .back-button {
+            margin-top: 20px;
+            background-color: #f44336;
+        }
+        
+        .back-button:hover {
+            background-color: #d32f2f;
+        }
+        
         .footer {
-            position: fixed;
+            position: absolute;
             bottom: 20px;
             left: 20px;
             display: flex;
-            align-items: center;
+            gap: 10px;
         }
-
-        .telegram-icon, .help-button {
+        
+        .footer-button {
             width: 40px;
             height: 40px;
-            margin-right: 10px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .telegram-icon {
             border-radius: 50%;
-        }
-
-        .help-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-weight: bold;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
-
-        .telegram-icon:hover, .help-button:hover {
+        
+        .footer-button:hover {
             transform: scale(1.1);
         }
-
-        .help-modal {
-            position: fixed;
-            bottom: 70px;
-            left: 20px;
-            background-color: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            max-width: 300px;
-            display: none;
-            z-index: 101;
+        
+        .telegram-button {
+            background-color: #0088cc;
         }
-
-        .dark-theme .help-modal {
-            background-color: #333;
+        
+        .support-button {
+            background-color: #4CAF50;
             color: white;
-        }
-
-        .help-modal a {
-            color: #4CAF50;
-            text-decoration: none;
             font-weight: bold;
-        }
-
-        .help-modal a:hover {
-            text-decoration: underline;
-        }
-
-        #game-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        #game-canvas {
-            border: 3px solid #4CAF50;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .dark-theme #game-canvas {
-            background-color: #222;
-            border-color: #45a049;
-        }
-
-        #score-display {
-            font-size: 24px;
-            color: #4CAF50;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-
-        .dark-theme #score-display {
-            color: #45a049;
-        }
-
-        .mobile-controls {
-            display: none;
-            margin-top: 20px;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 8px;
-            width: 180px;
-        }
-
-        .mobile-controls button {
-            background-color: rgba(76, 175, 80, 0.7);
             border: none;
-            border-radius: 8px;
-            padding: 15px;
-            font-size: 24px;
-            cursor: pointer;
+            outline: none;
+        }
+        
+        .copy-notification {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            background-color: #4CAF50;
             color: white;
-            transition: background-color 0.2s;
+            padding: 10px 15px;
+            border-radius: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
         }
-
-        .mobile-controls button:active {
-            background-color: rgba(69, 160, 73, 0.9);
-        }
-
-        .up-btn {
-            grid-column: 2;
-            grid-row: 1;
-        }
-
-        .left-btn {
-            grid-column: 1;
-            grid-row: 2;
-        }
-
-        .right-btn {
-            grid-column: 3;
-            grid-row: 2;
-        }
-
-        .down-btn {
-            grid-column: 2;
-            grid-row: 3;
-        }
-
-        .game-over-modal, .win-modal {
-            text-align: center;
-        }
-
-        .game-over-modal h2, .win-modal h2 {
-            font-size: 36px;
-            margin-bottom: 20px;
-            color: #4CAF50;
-        }
-
-        .dark-theme .game-over-modal h2,
-        .dark-theme .win-modal h2 {
-            color: #45a049;
-        }
-
-        .win-modal p {
-            margin: 10px 0;
-            font-size: 16px;
-        }
-
-        .company-link {
-            color: #4CAF50;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .company-link:hover {
-            text-decoration: underline;
-        }
-
+        
         @media (max-width: 768px) {
-            .game-title {
-                font-size: 48px;
-                margin-bottom: 30px;
-            }
-            
-            .menu-button {
-                width: 90%;
-                padding: 12px;
-                font-size: 18px;
-            }
-            
             .mobile-controls {
                 display: grid;
             }
-        }
-
-        @media (max-width: 480px) {
-            .game-title {
-                font-size: 36px;
-            }
             
-            .mobile-controls {
-                width: 160px;
-            }
-            
-            .mobile-controls button {
-                padding: 12px;
-                font-size: 20px;
+            #main-menu, #settings-menu, #game-over-menu {
+                width: 90%;
+                max-width: 400px;
             }
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <!-- Главное меню -->
     <div id="main-menu">
-        <h1 class="game-title">Snake</h1>
-        <button id="play-button" class="menu-button"><i class="fas fa-play"></i> Играть</button>
-        <button id="settings-button" class="menu-button"><i class="fas fa-cog"></i> Настройки</button>
-        <button id="exit-button" class="menu-button"><i class="fas fa-sign-out-alt"></i> Выход</button>
+        <h1>Змейка</h1>
+        <button id="play-button" class="menu-button">Играть</button>
+        <button id="settings-button" class="menu-button">Настройки</button>
+        <button id="exit-button" class="menu-button">Выход</button>
         
         <div class="footer">
-            <img src="https://telegram.org/img/t_logo.png" alt="Telegram" class="telegram-icon" id="telegram-icon">
-            <button class="help-button" id="help-button">?</button>
-            <div class="help-modal" id="help-modal">
-                Если у вас возникла какая-то ошибка, обратитесь к нам по почте:<br>
-                <a href="mailto:wertq6306@gmail.com">wertq6306@gmail.com</a>
-            </div>
+            <a href="https://t.me/yhcomapny" target="_blank" class="footer-button telegram-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                    <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.135-.26.24-.52.24l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                </svg>
+            </a>
+            <button class="footer-button support-button" id="support-button">?</button>
         </div>
+        <div class="copy-notification" id="copy-notification">Скопировано!</div>
     </div>
-
+    
     <!-- Меню настроек -->
-    <div id="settings-modal" class="modal">
-        <div class="modal-content">
-            <button class="close-button" id="close-settings">&times;</button>
-            <h2>Настройки</h2>
-            <div class="switch-container">
-                <span>Язык</span>
-                <label class="switch">
-                    <input type="checkbox" id="language-switch">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="switch-container">
-                <span>Тема</span>
-                <label class="switch">
-                    <input type="checkbox" id="theme-switch">
-                    <span class="slider"></span>
-                </label>
-            </div>
+    <div id="settings-menu" style="display: none;">
+        <h1>Настройки</h1>
+        <div class="switch-container">
+            <span>Темная тема</span>
+            <label class="switch">
+                <input type="checkbox" id="theme-switch">
+                <span class="slider"></span>
+            </label>
         </div>
+        <div class="switch-container">
+            <span>Сложность</span>
+            <select id="difficulty-select">
+                <option value="100">Легкая</option>
+                <option value="80">Средняя</option>
+                <option value="60">Сложная</option>
+            </select>
+        </div>
+        <button id="back-button" class="menu-button back-button">Назад</button>
     </div>
-
+    
     <!-- Игровой экран -->
     <div id="game-container">
         <div id="score-display">Очки: 0</div>
-        <canvas id="game-canvas"></canvas>
+        <canvas id="game-canvas" width="400" height="400"></canvas>
         <div class="mobile-controls">
-            <button class="up-btn" id="up-btn">↑</button>
-            <button class="left-btn" id="left-btn">←</button>
-            <button class="right-btn" id="right-btn">→</button>
-            <button class="down-btn" id="down-btn">↓</button>
+            <div></div>
+            <button id="up-btn">↑</button>
+            <div></div>
+            <button id="left-btn">←</button>
+            <div></div>
+            <button id="right-btn">→</button>
+            <div></div>
+            <button id="down-btn">↓</button>
+            <div></div>
         </div>
     </div>
 
-    <!-- Меню Game Over -->
-    <div id="game-over-modal" class="modal">
-        <div class="modal-content game-over-modal">
-            <h2>Игра окончена</h2>
-            <button id="restart-button" class="menu-button"><i class="fas fa-redo"></i> Заново</button>
-            <button id="home-button" class="menu-button"><i class="fas fa-home"></i> Главное меню</button>
-        </div>
-    </div>
-
-    <!-- Меню победы -->
-    <div id="win-modal" class="modal">
-        <div class="modal-content win-modal">
-            <h2>Поздравляем, вы победили!</h2>
-            <p>Помимо вас в этой игре выиграли <span id="winners-count">0</span> человек.</p>
-            <p>Спасибо за игру, и ждём вас снова</p>
-            <p>Создано <a href="http://t.me/yhcomapny" class="company-link">Yellow Vhess Company</a></p>
-            <button id="win-home-button" class="menu-button"><i class="fas fa-home"></i> Главное меню</button>
-        </div>
+    <!-- Меню после смерти -->
+    <div id="game-over-menu" style="display: none;">
+        <h1>Игра окончена</h1>
+        <div id="final-score" style="font-size: 20px; margin: 20px 0;">Ваш счет: 0</div>
+        <button id="restart-button" class="menu-button">Играть снова</button>
+        <button id="main-menu-button" class="menu-button back-button">Главное меню</button>
     </div>
 
     <script>
-        // Глобальные переменные
-        let isDarkTheme = false;
-        let isEnglish = false;
-        let winnersCount = 0;
-
-        // Элементы DOM
+        // Элементы интерфейса
         const mainMenu = document.getElementById('main-menu');
+        const settingsMenu = document.getElementById('settings-menu');
         const gameContainer = document.getElementById('game-container');
-        const gameCanvas = document.getElementById('game-canvas');
-        const ctx = gameCanvas.getContext('2d');
-        const scoreDisplay = document.getElementById('score-display');
-        const settingsModal = document.getElementById('settings-modal');
-        const gameOverModal = document.getElementById('game-over-modal');
-        const winModal = document.getElementById('win-modal');
-        const winnersCountSpan = document.getElementById('winners-count');
-        
-        // Кнопки
+        const gameOverMenu = document.getElementById('game-over-menu');
         const playButton = document.getElementById('play-button');
         const settingsButton = document.getElementById('settings-button');
         const exitButton = document.getElementById('exit-button');
-        const closeSettings = document.getElementById('close-settings');
-        const themeSwitch = document.getElementById('theme-switch');
-        const languageSwitch = document.getElementById('language-switch');
+        const backButton = document.getElementById('back-button');
         const restartButton = document.getElementById('restart-button');
-        const homeButton = document.getElementById('home-button');
-        const winHomeButton = document.getElementById('win-home-button');
-        const telegramIcon = document.getElementById('telegram-icon');
-        const helpButton = document.getElementById('help-button');
-        const helpModal = document.getElementById('help-modal');
+        const mainMenuButton = document.getElementById('main-menu-button');
+        const themeSwitch = document.getElementById('theme-switch');
+        const difficultySelect = document.getElementById('difficulty-select');
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const scoreDisplay = document.getElementById('score-display');
+        const finalScore = document.getElementById('final-score');
+        const supportButton = document.getElementById('support-button');
+        const copyNotification = document.getElementById('copy-notification');
         
-        // Мобильные кнопки управления
+        // Мобильное управление
         const upBtn = document.getElementById('up-btn');
         const leftBtn = document.getElementById('left-btn');
         const rightBtn = document.getElementById('right-btn');
         const downBtn = document.getElementById('down-btn');
-
+        
         // Игровые переменные
         let snake = [];
         let food = {};
         let direction = 'right';
         let nextDirection = 'right';
-        let gameInterval;
         let score = 0;
-        let scoreInterval;
-        let gameStarted = false;
-        let gridSize = 20; // Увеличиваем размер сетки для лучшего отображения на мобильных
+        let gameInterval;
+        let gridSize = 20;
         let gameSpeed = 100;
-        let canvasSize = 400; // Базовый размер canvas
-
+        let gameStarted = false;
+        let isDarkTheme = false;
+        
         // Инициализация игры
         function initGame() {
-            // Установка размера canvas с учетом устройства
-            setupCanvasSize();
-            
-            // Сброс змейки
-            const startX = Math.floor(canvasSize / 2 / gridSize) * gridSize;
-            const startY = Math.floor(canvasSize / 2 / gridSize) * gridSize;
+            // Создаем змейку
+            const startX = Math.floor(canvas.width / 2 / gridSize) * gridSize;
+            const startY = Math.floor(canvas.height / 2 / gridSize) * gridSize;
             
             snake = [
                 {x: startX, y: startY},
                 {x: startX - gridSize, y: startY},
-                {x: startX - gridSize * 2, y: startY},
-                {x: startX - gridSize * 3, y: startY},
-                {x: startX - gridSize * 4, y: startY}
+                {x: startX - gridSize * 2, y: startY}
             ];
             
             direction = 'right';
             nextDirection = 'right';
             score = 0;
-            updateScoreDisplay();
-            
-            // Создание еды
-            createFood();
-            
-            // Очистка canvas
-            ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-            
-            // Отрисовка змейки и еды
-            drawSnake();
-            drawFood();
-            
-            // Запуск игрового цикла
-            if (gameInterval) clearInterval(gameInterval);
-            if (scoreInterval) clearInterval(scoreInterval);
-            
-            gameInterval = setInterval(gameLoop, gameSpeed);
-            scoreInterval = setInterval(incrementScore, 1000);
+            scoreDisplay.textContent = `Очки: ${score}`;
             gameStarted = false;
+            
+            createFood();
+            drawGame();
         }
-
-        // Установка размера canvas
-        function setupCanvasSize() {
-            if (window.innerWidth <= 768) {
-                // Для мобильных устройств делаем canvas квадратным и адаптивным
-                const maxSize = Math.min(window.innerWidth - 40, window.innerHeight - 200, 400);
-                canvasSize = maxSize - (maxSize % gridSize); // Обеспечиваем кратность gridSize
-                gameCanvas.width = canvasSize;
-                gameCanvas.height = canvasSize;
-            } else {
-                // Для десктопов фиксированный размер
-                canvasSize = 400;
-                gameCanvas.width = canvasSize;
-                gameCanvas.height = canvasSize;
+        
+        // Запуск игры
+        function startGame() {
+            if (gameInterval) clearInterval(gameInterval);
+            gameInterval = setInterval(gameLoop, gameSpeed);
+            gameStarted = true;
+        }
+        
+        // Создание еды
+        function createFood() {
+            food = {
+                x: Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize,
+                y: Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize
+            };
+            
+            // Проверка, чтобы еда не появилась на змейке
+            for (let segment of snake) {
+                if (food.x === segment.x && food.y === segment.y) {
+                    return createFood();
+                }
             }
         }
-
-        // Игровой цикл
+        
+        // Основной игровой цикл
         function gameLoop() {
             if (!gameStarted) return;
             
-            // Обновление направления
             direction = nextDirection;
-            
-            // Получение головы змейки
             const head = {x: snake[0].x, y: snake[0].y};
             
-            // Перемещение головы в зависимости от направления
+            // Движение головы
             switch (direction) {
-                case 'up':
-                    head.y -= gridSize;
-                    break;
-                case 'down':
-                    head.y += gridSize;
-                    break;
-                case 'left':
-                    head.x -= gridSize;
-                    break;
-                case 'right':
-                    head.x += gridSize;
-                    break;
+                case 'up': head.y -= gridSize; break;
+                case 'down': head.y += gridSize; break;
+                case 'left': head.x -= gridSize; break;
+                case 'right': head.x += gridSize; break;
             }
             
-            // Проверка на столкновение с границами
-            if (head.x < 0 || head.x >= gameCanvas.width || head.y < 0 || head.y >= gameCanvas.height) {
+            // Проверка столкновений
+            if (
+                head.x < 0 || head.x >= canvas.width ||
+                head.y < 0 || head.y >= canvas.height ||
+                snake.some(segment => segment.x === head.x && segment.y === head.y)
+            ) {
                 gameOver();
                 return;
             }
             
-            // Проверка на столкновение с собой
-            for (let i = 0; i < snake.length; i++) {
-                if (head.x === snake[i].x && head.y === snake[i].y) {
-                    gameOver();
-                    return;
-                }
-            }
-            
-            // Добавление новой головы
+            // Добавляем новую голову
             snake.unshift(head);
             
-            // Проверка на съедание еды
+            // Проверка съедания еды
             if (head.x === food.x && head.y === food.y) {
-                // Увеличение счета
                 score += 10;
-                updateScoreDisplay();
-                
-                // Создание новой еды
+                scoreDisplay.textContent = `Очки: ${score}`;
                 createFood();
-                
-                // Проверка на победу
-                if (score >= 1000) {
-                    winGame();
-                    return;
-                }
             } else {
-                // Удаление хвоста, если еда не съедена
+                // Удаляем хвост
                 snake.pop();
             }
             
-            // Отрисовка игры
-            ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-            drawSnake();
-            drawFood();
+            drawGame();
         }
-
-        // Отрисовка змейки
-        function drawSnake() {
-            ctx.fillStyle = '#4CAF50';
-            for (let i = 0; i < snake.length; i++) {
-                ctx.fillRect(snake[i].x, snake[i].y, gridSize, gridSize);
-                
-                // Добавление границ для сегментов змейки
-                ctx.strokeStyle = '#45a049';
-                ctx.strokeRect(snake[i].x, snake[i].y, gridSize, gridSize);
-            }
-        }
-
-        // Создание еды
-        function createFood() {
-            food = {
-                x: Math.floor(Math.random() * (gameCanvas.width / gridSize)) * gridSize,
-                y: Math.floor(Math.random() * (gameCanvas.height / gridSize)) * gridSize
-            };
+        
+        // Отрисовка игры
+        function drawGame() {
+            // Очистка canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Проверка, чтобы еда не появилась на змейке
-            for (let i = 0; i < snake.length; i++) {
-                if (food.x === snake[i].x && food.y === snake[i].y) {
-                    createFood();
-                    return;
-                }
+            // Рисуем змейку
+            ctx.fillStyle = '#4CAF50';
+            for (let segment of snake) {
+                ctx.fillRect(segment.x, segment.y, gridSize, gridSize);
+                ctx.strokeStyle = '#45a049';
+                ctx.strokeRect(segment.x, segment.y, gridSize, gridSize);
             }
-        }
-
-        // Отрисовка еды
-        function drawFood() {
+            
+            // Рисуем еду
             ctx.fillStyle = 'red';
             ctx.fillRect(food.x, food.y, gridSize, gridSize);
-            
-            // Добавление границ для еды
-            ctx.strokeStyle = 'darkred';
-            ctx.strokeRect(food.x, food.y, gridSize, gridSize);
         }
-
-        // Обновление счета
-        function updateScoreDisplay() {
-            scoreDisplay.textContent = isEnglish ? `Score: ${score}` : `Очки: ${score}`;
-        }
-
-        // Увеличение счета каждую секунду
-        function incrementScore() {
-            if (gameStarted) {
-                score += 5;
-                updateScoreDisplay();
-                
-                if (score >= 1000) {
-                    winGame();
-                }
-            }
-        }
-
+        
         // Конец игры
         function gameOver() {
             clearInterval(gameInterval);
-            clearInterval(scoreInterval);
-            gameOverModal.style.display = 'flex';
+            finalScore.textContent = `Ваш счет: ${score}`;
+            gameContainer.style.display = 'none';
+            gameOverMenu.style.display = 'block';
         }
-
-        // Победа в игре
-        function winGame() {
-            clearInterval(gameInterval);
-            clearInterval(scoreInterval);
-            winnersCount++;
-            winnersCountSpan.textContent = winnersCount;
-            winModal.style.display = 'flex';
-        }
+        
+        // Исправленный обработчик кнопки поддержки
+        supportButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Создаем временный input для копирования
+            const tempInput = document.createElement('input');
+            tempInput.value = 'wertq6306@gmail.com';
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            
+            try {
+                // Пытаемся скопировать
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    // Показываем уведомление
+                    copyNotification.style.opacity = '1';
+                    setTimeout(() => {
+                        copyNotification.style.opacity = '0';
+                    }, 2000);
+                } else {
+                    alert('Не удалось скопировать email. Скопируйте вручную: wertq6306@gmail.com');
+                }
+            } catch (err) {
+                alert('Ошибка при копировании. Скопируйте вручную: wertq6306@gmail.com');
+            }
+            
+            // Удаляем временный input
+            document.body.removeChild(tempInput);
+        });
 
         // Обработчики событий
         playButton.addEventListener('click', () => {
@@ -716,237 +484,121 @@
             gameContainer.style.display = 'flex';
             initGame();
         });
-
+        
         settingsButton.addEventListener('click', () => {
-            settingsModal.style.display = 'flex';
+            mainMenu.style.display = 'none';
+            settingsMenu.style.display = 'block';
         });
-
+        
         exitButton.addEventListener('click', () => {
-            if (confirm(isEnglish ? 'Are you sure you want to exit?' : 'Вы уверены, что хотите выйти?')) {
+            if (confirm('Вы уверены, что хотите выйти?')) {
                 window.close();
             }
         });
-
-        closeSettings.addEventListener('click', () => {
-            settingsModal.style.display = 'none';
+        
+        backButton.addEventListener('click', () => {
+            settingsMenu.style.display = 'none';
+            mainMenu.style.display = 'block';
         });
-
+        
         restartButton.addEventListener('click', () => {
-            gameOverModal.style.display = 'none';
+            gameOverMenu.style.display = 'none';
+            gameContainer.style.display = 'flex';
             initGame();
         });
-
-        homeButton.addEventListener('click', () => {
-            gameOverModal.style.display = 'none';
-            gameContainer.style.display = 'none';
+        
+        mainMenuButton.addEventListener('click', () => {
+            gameOverMenu.style.display = 'none';
             mainMenu.style.display = 'block';
-            clearInterval(gameInterval);
-            clearInterval(scoreInterval);
         });
-
-        winHomeButton.addEventListener('click', () => {
-            winModal.style.display = 'none';
-            gameContainer.style.display = 'none';
-            mainMenu.style.display = 'block';
-            clearInterval(gameInterval);
-            clearInterval(scoreInterval);
-        });
-
-        telegramIcon.addEventListener('click', () => {
-            window.open('http://t.me/yhcomapny', '_blank');
-        });
-
-        helpButton.addEventListener('click', () => {
-            helpModal.style.display = helpModal.style.display === 'block' ? 'none' : 'block';
-        });
-
-        // Переключение темы
+        
         themeSwitch.addEventListener('change', () => {
             isDarkTheme = themeSwitch.checked;
             document.body.classList.toggle('dark-theme', isDarkTheme);
-            
-            // Сохранение темы в localStorage
             localStorage.setItem('snakeTheme', isDarkTheme ? 'dark' : 'light');
         });
-
-        // Переключение языка
-        languageSwitch.addEventListener('change', () => {
-            isEnglish = languageSwitch.checked;
-            updateTexts();
-            
-            // Сохранение языка в localStorage
-            localStorage.setItem('snakeLanguage', isEnglish ? 'en' : 'ru');
+        
+        difficultySelect.addEventListener('change', () => {
+            gameSpeed = parseInt(difficultySelect.value);
+            localStorage.setItem('snakeDifficulty', gameSpeed);
         });
-
-        // Обновление текстов при смене языка
-        function updateTexts() {
-            if (isEnglish) {
-                // Перевод на английский
-                playButton.innerHTML = '<i class="fas fa-play"></i> Play';
-                settingsButton.innerHTML = '<i class="fas fa-cog"></i> Settings';
-                exitButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Exit';
-                document.querySelector('.modal-content h2').textContent = 'Settings';
-                document.querySelectorAll('.switch-container span')[0].textContent = 'Language';
-                document.querySelectorAll('.switch-container span')[1].textContent = 'Theme';
-                document.getElementById('game-over-modal').querySelector('h2').textContent = 'Game Over';
-                restartButton.innerHTML = '<i class="fas fa-redo"></i> Restart';
-                homeButton.innerHTML = '<i class="fas fa-home"></i> Main Menu';
-                winHomeButton.innerHTML = '<i class="fas fa-home"></i> Main Menu';
-                helpModal.innerHTML = 'If you encounter an error, contact us by email:<br><a href="mailto:wertq6306@gmail.com">wertq6306@gmail.com</a>';
-                document.getElementById('win-modal').querySelector('h2').textContent = 'Congratulations, you won!';
-                document.getElementById('win-modal').querySelectorAll('p')[0].innerHTML = `Besides you, <span id="winners-count">${winnersCount}</span> people have won this game.`;
-                document.getElementById('win-modal').querySelectorAll('p')[1].textContent = 'Thank you for playing, and we look forward to seeing you again';
-            } else {
-                // Перевод на русский
-                playButton.innerHTML = '<i class="fas fa-play"></i> Играть';
-                settingsButton.innerHTML = '<i class="fas fa-cog"></i> Настройки';
-                exitButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Выход';
-                document.querySelector('.modal-content h2').textContent = 'Настройки';
-                document.querySelectorAll('.switch-container span')[0].textContent = 'Язык';
-                document.querySelectorAll('.switch-container span')[1].textContent = 'Тема';
-                document.getElementById('game-over-modal').querySelector('h2').textContent = 'Игра окончена';
-                restartButton.innerHTML = '<i class="fas fa-redo"></i> Заново';
-                homeButton.innerHTML = '<i class="fas fa-home"></i> Главное меню';
-                winHomeButton.innerHTML = '<i class="fas fa-home"></i> Главное меню';
-                helpModal.innerHTML = 'Если у вас возникла какая-то ошибка, обратитесь к нам по почте:<br><a href="mailto:wertq6306@gmail.com">wertq6306@gmail.com</a>';
-                document.getElementById('win-modal').querySelector('h2').textContent = 'Поздравляем, вы победили!';
-                document.getElementById('win-modal').querySelectorAll('p')[0].innerHTML = `Помимо вас в этой игре выиграли <span id="winners-count">${winnersCount}</span> человек.`;
-                document.getElementById('win-modal').querySelectorAll('p')[1].textContent = 'Спасибо за игру, и ждём вас снова';
-            }
-            updateScoreDisplay();
-        }
-
+        
         // Управление с клавиатуры
         document.addEventListener('keydown', (e) => {
-            if (!gameStarted && (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || 
-                                e.key === 'w' || e.key === 'a' || e.key === 's' || e.key === 'd')) {
-                gameStarted = true;
+            if (!gameStarted && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                startGame();
             }
             
             switch (e.key) {
-                case 'ArrowUp':
-                case 'w':
-                    if (direction !== 'down') nextDirection = 'up';
-                    break;
-                case 'ArrowDown':
-                case 's':
-                    if (direction !== 'up') nextDirection = 'down';
-                    break;
-                case 'ArrowLeft':
-                case 'a':
-                    if (direction !== 'right') nextDirection = 'left';
-                    break;
-                case 'ArrowRight':
-                case 'd':
-                    if (direction !== 'left') nextDirection = 'right';
-                    break;
+                case 'ArrowUp': if (direction !== 'down') nextDirection = 'up'; break;
+                case 'ArrowDown': if (direction !== 'up') nextDirection = 'down'; break;
+                case 'ArrowLeft': if (direction !== 'right') nextDirection = 'left'; break;
+                case 'ArrowRight': if (direction !== 'left') nextDirection = 'right'; break;
             }
         });
-
+        
         // Мобильное управление
-        upBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            if (!gameStarted) gameStarted = true;
-            if (direction !== 'down') nextDirection = 'up';
-        });
-
-        downBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            if (!gameStarted) gameStarted = true;
-            if (direction !== 'up') nextDirection = 'down';
-        });
-
-        leftBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            if (!gameStarted) gameStarted = true;
-            if (direction !== 'right') nextDirection = 'left';
-        });
-
-        rightBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            if (!gameStarted) gameStarted = true;
-            if (direction !== 'left') nextDirection = 'right';
-        });
-
-        // Также добавляем обработчики для кликов (на случай устройств с поддержкой мыши)
         upBtn.addEventListener('click', () => {
-            if (!gameStarted) gameStarted = true;
+            if (!gameStarted) startGame();
             if (direction !== 'down') nextDirection = 'up';
         });
-
+        
         downBtn.addEventListener('click', () => {
-            if (!gameStarted) gameStarted = true;
+            if (!gameStarted) startGame();
             if (direction !== 'up') nextDirection = 'down';
         });
-
+        
         leftBtn.addEventListener('click', () => {
-            if (!gameStarted) gameStarted = true;
+            if (!gameStarted) startGame();
             if (direction !== 'right') nextDirection = 'left';
         });
-
+        
         rightBtn.addEventListener('click', () => {
-            if (!gameStarted) gameStarted = true;
+            if (!gameStarted) startGame();
             if (direction !== 'left') nextDirection = 'right';
         });
-
-        // Загрузка сохраненных настроек
+        
+        // Загрузка настроек
         function loadSettings() {
+            // Тема
             const savedTheme = localStorage.getItem('snakeTheme');
-            const savedLanguage = localStorage.getItem('snakeLanguage');
-            
             if (savedTheme === 'dark') {
                 isDarkTheme = true;
                 document.body.classList.add('dark-theme');
                 themeSwitch.checked = true;
             }
             
-            if (savedLanguage === 'en') {
-                isEnglish = true;
-                languageSwitch.checked = true;
-                updateTexts();
+            // Сложность
+            const savedDifficulty = localStorage.getItem('snakeDifficulty');
+            if (savedDifficulty) {
+                gameSpeed = parseInt(savedDifficulty);
+                difficultySelect.value = gameSpeed;
             }
         }
-
-        // Закрытие модальных окон при клике вне их
-        window.addEventListener('click', (event) => {
-            if (event.target === settingsModal) {
-                settingsModal.style.display = 'none';
+        
+        // Адаптация под мобильные устройства
+        function handleResize() {
+            if (window.innerWidth <= 768) {
+                const size = Math.min(window.innerWidth - 40, 400);
+                canvas.width = size - (size % gridSize);
+                canvas.height = size - (size % gridSize);
+            } else {
+                canvas.width = 400;
+                canvas.height = 400;
             }
-            if (event.target === gameOverModal) {
-                gameOverModal.style.display = 'none';
-            }
-            if (event.target === winModal) {
-                winModal.style.display = 'none';
-            }
-            if (event.target !== helpButton && event.target !== helpModal && !helpModal.contains(event.target)) {
-                helpModal.style.display = 'none';
-            }
-        });
-
-        // Инициализация при загрузке страницы
-        window.addEventListener('load', () => {
-            loadSettings();
             
-            // Скрытие всех модальных окон
-            settingsModal.style.display = 'none';
-            gameOverModal.style.display = 'none';
-            winModal.style.display = 'none';
-            helpModal.style.display = 'none';
-            
-            // Скрытие игрового контейнера
-            gameContainer.style.display = 'none';
-            
-            // Настройка canvas при загрузке
-            setupCanvasSize();
-        });
-
-        // Обработка изменения размера окна
-        window.addEventListener('resize', () => {
             if (gameContainer.style.display === 'flex') {
-                setupCanvasSize();
                 initGame();
             }
+        }
+        
+        // Инициализация при загрузке
+        window.addEventListener('load', () => {
+            loadSettings();
+            handleResize();
         });
+        
+        window.addEventListener('resize', handleResize);
     </script>
 </body>
 </html>
